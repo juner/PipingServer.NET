@@ -328,7 +328,7 @@ namespace PipingServer.App.Tests
                     using var stream = await response.Content.ReadAsStreamAsync();
                     foreach (var (Key, Value) in response.Content.Headers.Where(v => v.Value.Any()).Select(kv => (kv.Key, kv.Value)))
                         Trace.WriteLine($"[RESPONSE CONTENT HEADER] : {Key} : [{string.Join(", ", Value)}]");
-                    ContentType = response.Content.Headers.ContentType.MediaType;
+                    ContentType = response.Content.Headers.ContentType?.MediaType;
                     FileName = response.Content.Headers.ContentDisposition?.FileNameStar ?? response.Content.Headers.ContentDisposition?.FileName ?? null;
                     using var streamDispose = Token.Register(() => stream.Dispose());
                     var buffer = new byte[1024];

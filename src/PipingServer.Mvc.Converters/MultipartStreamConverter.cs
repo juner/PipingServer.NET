@@ -55,7 +55,7 @@ namespace PipingServer.Mvc.Converters
             if ((await reader.ReadNextSectionAsync(Token)) is MultipartSection section)
             {
                 Headers.Clear();
-                foreach (var h in section.Headers)
+                foreach (var h in section.Headers ?? System.Linq.Enumerable.Empty<KeyValuePair<string, StringValues>>())
                     Headers.Add(h.Key, h.Value);
                 return (Headers, section.Body);
             }

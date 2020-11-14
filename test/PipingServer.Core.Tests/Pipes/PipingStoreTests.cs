@@ -20,7 +20,7 @@ namespace PipingServer.Core.Pipes.Tests
     public class PipingStoreTests
     {
         readonly Encoding Encoding = Encoding.UTF8;
-        private ServiceProvider CreateProvider(Action<PipingOptions>? OptionEdit = null)
+        private static ServiceProvider CreateProvider(Action<PipingOptions>? OptionEdit = null)
         {
             var services = new ServiceCollection();
             services
@@ -92,7 +92,7 @@ namespace PipingServer.Core.Pipes.Tests
                 await Task.WhenAll(senderTask, receiverTask);
                 Assert.AreEqual(PipeType.Sender, SenderResult.PipeType, "sender pipe type");
                 Assert.AreEqual("text/plain; charset=utf-8"
-                    , ((SenderResult.Headers?.TryGetValue("Content-Type", out var sct) ?? false) ? sct : StringValues.Empty).ToString()
+                    , (SenderResult.Headers != null && SenderResult.Headers.TryGetValue("Content-Type", out var sct) ? sct : StringValues.Empty).ToString()
                     , "sender content-type");
                 using var SenderResultStream = new MemoryStream();
                 await SenderResult.Stream.CopyToAsync(SenderResultStream);
@@ -100,7 +100,7 @@ namespace PipingServer.Core.Pipes.Tests
                 Logger.LogInformation(Encoding.GetString(SenderResultStream.ToArray()));
                 Assert.AreEqual(PipeType.Receiver, ReceiverResult.PipeType, "receiver pipe type");
                 Assert.AreEqual(SendContentType
-                    , ((ReceiverResult.Headers?.TryGetValue("Content-Type", out var rct) ?? false) ? rct : StringValues.Empty).ToString()
+                    , (ReceiverResult.Headers != null && ReceiverResult.Headers.TryGetValue("Content-Type", out var rct) ? rct : StringValues.Empty).ToString()
                     , "receiver content-type");
                 Assert.AreEqual(SendContentLength
                     , ReceiverResult.Headers?.ContentLength
@@ -178,7 +178,7 @@ namespace PipingServer.Core.Pipes.Tests
                 await Task.WhenAll(senderTask, receiverTask);
                 Assert.AreEqual(PipeType.Sender, SenderResult.PipeType, "sender pipe type");
                 Assert.AreEqual("text/plain; charset=utf-8"
-                    , ((SenderResult.Headers?.TryGetValue("Content-Type", out var sct) ?? false) ? sct : StringValues.Empty).ToString()
+                    , (SenderResult.Headers != null && SenderResult.Headers.TryGetValue("Content-Type", out var sct) ? sct : StringValues.Empty).ToString()
                     , "sender content-type");
                 using var SenderResultStream = new MemoryStream();
                 await SenderResult.Stream.CopyToAsync(SenderResultStream);
@@ -186,7 +186,7 @@ namespace PipingServer.Core.Pipes.Tests
                 Logger.LogInformation(Encoding.GetString(SenderResultStream.ToArray()));
                 Assert.AreEqual(PipeType.Receiver, ReceiverResult.PipeType, "receiver pipe type");
                 Assert.AreEqual(SendContentType
-                    , ((ReceiverResult.Headers?.TryGetValue("Content-Type", out var rct) ?? false) ? rct : StringValues.Empty).ToString()
+                    , (ReceiverResult.Headers != null && ReceiverResult.Headers.TryGetValue("Content-Type", out var rct) ? rct : StringValues.Empty).ToString()
                     , "receiver content-type");
                 Assert.AreEqual(SendContentLength
                     , ReceiverResult.Headers?.ContentLength
